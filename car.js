@@ -8,6 +8,8 @@ class Car {
 
         this.speed = 0;
         this.acceleration = 0.2;
+        this.maxSpeed = 3;
+        this.friction = 0.05;
 
         this.controls = new Controls();
     }
@@ -29,6 +31,21 @@ class Car {
         }
         if (this.controls.reverse) {
             this.speed -= this.acceleration;
+        }
+        //Capping the speed to the maxSpeed
+        if (this.speed > this.maxSpeed) {
+            this.speed = this.maxSpeed;
+        }
+        //Capping the reverse speed to half because reverse is slower than forward
+        if (this.speed < -this.maxSpeed / 2) {
+            this.speed = -this.maxSpeed / 2;
+        }
+        //Adding friction so that car stops after slowing down
+        if (this.speed > 0) {
+            this.speed -= this.friction;
+        }
+        if (this.speed < 0) {
+            this.speed += this.friction;
         }
         this.y -= this.speed;
     }
