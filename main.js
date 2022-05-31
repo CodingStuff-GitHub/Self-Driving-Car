@@ -15,8 +15,15 @@ function animate() {
     car.update();
     //Refresh the canvas everytime and it clears it again
     canvas.height = window.innerHeight;
+
+    ctx.save();
+    ctx.translate(0, -car.y + canvas.height * 0.8);
+
     road.draw(ctx);
     car.draw(ctx);
+
+    ctx.restore();
+
     //requestAnimationFrame calls the animate method many times per second
     //which allows the car to move smoothly and it gives illustion of movement
     requestAnimationFrame(animate);
