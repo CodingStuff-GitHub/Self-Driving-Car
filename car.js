@@ -5,6 +5,10 @@ class Car {
         this.y = y;
         this.width = width;
         this.height = height;
+
+        this.speed = 0;
+        this.acceleration = 0.2;
+
         this.controls = new Controls();
     }
 
@@ -21,10 +25,11 @@ class Car {
     //Update the car
     update() {
         if (this.controls.forward) {
-            this.y -= 2;
+            this.speed += this.acceleration;
         }
         if (this.controls.reverse) {
-            this.y += 2;
+            this.speed -= this.acceleration;
         }
+        this.y -= this.speed;
     }
 }
