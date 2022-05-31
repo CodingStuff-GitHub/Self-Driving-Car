@@ -7,7 +7,7 @@ class Car {
         this.height = height;
         this.controls = new Controls();
     }
-    
+
     //Draw the car
     draw(ctx) {
         ctx.beginPath();
@@ -16,5 +16,15 @@ class Car {
             this.width,
             this.height);
         ctx.fill();
+    }
+
+    //Update the car
+    update() {
+        if (this.controls.forward) {
+            this.y -= 2;
+        }
+        if (this.controls.reverse) {
+            this.y += 2;
+        }
     }
 }
