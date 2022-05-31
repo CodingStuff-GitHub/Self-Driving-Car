@@ -12,7 +12,9 @@ const car = new Car(road.getLaneCenter(1), 100, 30, 50);
 animate()
 
 function animate() {
-    car.update();
+    //Send borders for sensors to know where they are
+    car.update(road.borders);
+    
     //Refresh the canvas everytime and it clears it again
     canvas.height = window.innerHeight;
 
