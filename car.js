@@ -46,12 +46,18 @@ class Car {
             this.speed = 0;
         }
         //Left and Right movement
-        if (this.controls.left) {
-            this.angle += 0.03;
+        if (this.speed != 0) {
+            //Fliping the control when it is reversed
+            const flip = this.speed > 0 ? 1 : -1;
+            if (this.controls.left) {
+                this.angle += 0.03 * flip;
+            }
+            if (this.controls.right) {
+                this.angle -= 0.03 * flip;
+            }
         }
-        if (this.controls.right) {
-            this.angle -= 0.03;
-        }
+        //Subtracting sin and cos of the angle from the x and y 
+        //to move in that particular direction
         this.x -= Math.sin(this.angle) * this.speed;
         this.y -= Math.cos(this.angle) * this.speed;
     }
