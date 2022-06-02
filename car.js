@@ -13,9 +13,15 @@ class Car {
         this.maxSpeed = maxSpeed;
         this.friction = 0.05;
 
+        this.brain = controlType == "AI"
+
         this.angle = 0;
+
         if (controlType != "DUMMY") {
             this.sensor = new Sensor(this);
+            this.brain = new NeuralNetwork(
+                [this.sensor.rayCount, 6, 4]
+            )
         }
         this.controls = new Controls(controlType);
     }
@@ -29,6 +35,18 @@ class Car {
         }
         if (this.sensor) {
             this.sensor.update(roadBorders, traffic);
+            //If object is far away, we need less values and vice versa.
+            //That is the reason why we are subtracting offset from 1
+            const offsets = this.sensor.readings.map(
+                s => s == null ? 0 : 1 - s.offset
+            );
+            const outputs = NeuralNetwork.feedForward(offsets, this.brain);
+            if (this.brain) {
+                this.controls.forward = outputs[0];
+                this.controls.left = outputs[1];
+                this.controls.right = outputs[2];
+                this.controls.reverse = outputs[3];
+            }
         }
     }
 
@@ -125,7 +143,7 @@ class Car {
     }
 
     //Draw the car
-    draw(ctx, colour) {
+    draw(ctx, colour, drawSensor = false) {
         if (this.damage) {
             ctx.fillStyle = "gray";
         }
@@ -139,7 +157,7 @@ class Car {
             ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
         }
         ctx.fill();
-        if (this.sensor) {
+        if (this.sensor && drawSensor) {
             this.sensor.draw(ctx);
         }
     }
