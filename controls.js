@@ -1,11 +1,19 @@
 class Controls {
     //Constructor
-    constructor() {
+    constructor(type) {
         this.forward = false;
         this.reverse = false;
         this.left = false;
         this.right = false;
-        this.#addKeybroadListeners();
+        switch (type) {
+            case "KEYS":
+                this.#addKeybroadListeners();
+                break;
+            case "DUMMY":
+                this.forward = true;
+                break;
+        }
+
     }
     #addKeybroadListeners() {
         //On pressing the keys

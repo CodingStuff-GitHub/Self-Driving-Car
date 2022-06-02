@@ -1,28 +1,28 @@
 class Sensor {
     constructor(car) {
         this.car = car;
-        this.rayCount = 3;
-        this.rayLimit = 100; //Sensors work to certain limit
-        this.raySpread = Math.PI / 4; //45 degrees angle
+        this.rayCount = 5;
+        this.rayLimit = 150; //Sensors work to certain limit
+        this.raySpread = Math.PI / 3; //60 degrees angle
 
         this.rays = [];
         //How far is the border by using rays
         this.readings = [];
     }
-    update(roadBorders) {
+    update(roadBorders, traffic) {
         this.#castRays();
         this.readings = [];
         for (var i = 0; i < this.rays.length; i++) {
             this.readings.push(
-                this.#getReading(this.rays[i], roadBorders)
+                this.#getReading(this.rays[i], roadBorders, traffic)
             );
         }
     }
 
-    #getReading(ray, roadBorders) {
+    #getReading(ray, roadBorders, traffic) {
         //where the ray touches any border
         let touches = [];
-        for (var i = 0; i < roadBorders.length; i++) {
+        for (let i = 0; i < roadBorders.length; i++) {
             //getInteraction is a utli.js function which returns
             //x, y : intersection point between two lines ray and border
             //offset : offset from center of the car i.e starting point of the ray
@@ -33,6 +33,20 @@ class Sensor {
                 touches.push(touch);
             }
         }
+
+        for (let i = 0; i < traffic.length; i++) {
+            const poly = traffic[i].polygon;
+            for (let j = 0; j < poly.length; j++) {
+                const value = getIntersection(
+                    ray[0], ray[1], poly[j], poly[(j + 1) % poly.length]
+                );
+                if (value) {
+                    touches.push(value);
+                }
+            }
+        }
+
+
 
         if (touches.length == 0) {
             return null;
@@ -48,6 +62,7 @@ class Sensor {
             return touches.find(e => e.offset == minOffset);
         }
     }
+
     #castRays() {
 
         this.rays = [];

@@ -1,6 +1,6 @@
 class Car {
     //Constructor
-    constructor(x, y, width, height) {
+    constructor(x, y, width, height, controlType, maxSpeed = 3) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -10,30 +10,39 @@ class Car {
 
         this.speed = 0;
         this.acceleration = 0.2;
-        this.maxSpeed = 3;
+        this.maxSpeed = maxSpeed;
         this.friction = 0.05;
 
         this.angle = 0;
-
-        this.sensor = new Sensor(this);
-        this.controls = new Controls();
+        if (controlType != "DUMMY") {
+            this.sensor = new Sensor(this);
+        }
+        this.controls = new Controls(controlType);
     }
 
     //Update the car and the sensors
-    update(roadBorders) {
-        this.#move();
-        this.polygon = this.#createPolygon();
-        this.damage = this.#assessDamage(roadBorders);
-        this.sensor.update(roadBorders);
-
+    update(roadBorders, traffic) {
+        if (!this.damage) {
+            this.#move();
+            this.polygon = this.#createPolygon();
+            this.damage = this.#assessDamage(roadBorders, traffic);
+        }
+        if (this.sensor) {
+            this.sensor.update(roadBorders, traffic);
+        }
     }
 
     //To check of the car is damage or not
-    #assessDamage(roadBorders) {
+    #assessDamage(roadBorders, traffic) {
         //Check if the polygon is intersecting with any borders
         for (let i = 0; i < roadBorders.length; i++) {
             //utils.js function
             if (polysIntersection(this.polygon, roadBorders[i])) {
+                return true;
+            }
+        }
+        for (let i = 0; i < traffic.length; i++) {
+            if (polysIntersection(this.polygon, traffic[i].polygon)) {
                 return true;
             }
         }
@@ -116,12 +125,12 @@ class Car {
     }
 
     //Draw the car
-    draw(ctx) {
+    draw(ctx, colour) {
         if (this.damage) {
             ctx.fillStyle = "gray";
         }
         else {
-            ctx.fillStyle = "black";
+            ctx.fillStyle = colour;
         }
         ctx.beginPath();
         //polygon array have all the points to draw a polygon
@@ -130,7 +139,8 @@ class Car {
             ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
         }
         ctx.fill();
-
-        this.sensor.draw(ctx);
+        if (this.sensor) {
+            this.sensor.draw(ctx);
+        }
     }
 }
