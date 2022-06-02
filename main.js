@@ -17,6 +17,12 @@ const traffic = [
 let bestCar = cars[0];
 if (localStorage.getItem("BestBrain")) {
     bestCar.brain = JSON.parse(localStorage.getItem("BestBrain"));
+    for (let i = 0; i < cars.length; i++) {
+        cars[i].brain = JSON.parse(localStorage.getItem("BestBrain"));
+        if (i != 0) {
+            NeuralNetwork.mutate(cars[i].brain, 0.2);
+        }
+    }
 }
 
 //Animate the car
@@ -78,7 +84,7 @@ function animate() {
         cars[i].draw(ctx, "blue");
     }
     ctx.globalAlpha = 1;
-    bestCar.draw(ctx, "green", true);
+    bestCar.draw(ctx, "blue", true);
     ctx.restore();
 
     //requestAnimationFrame calls the animate method many times per second
