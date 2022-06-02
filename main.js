@@ -7,12 +7,15 @@ canvas.width = 200;
 const ctx = canvas.getContext('2d');
 const road = new Road(canvas.width / 2, canvas.width * 0.9);
 //KEYS is used for giving control of keys to this particular car
-const N = 100;
+const N = 1;
 const cars = generateCars(N);
 const traffic = [
-    new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(2), -500, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(3), -400, 30, 50, "DUMMY", 2)
+    new Car(road.getLaneCenter(0), -100, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(1), -500, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(2), -400, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(2), -200, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(1), -300, 30, 50, "DUMMY", 2),
+    new Car(road.getLaneCenter(0), -700, 30, 50, "DUMMY", 2)
 ];
 let bestCar = cars[0];
 if (localStorage.getItem("BestBrain")) {
