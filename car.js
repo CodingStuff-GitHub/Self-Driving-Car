@@ -20,7 +20,7 @@ class Car {
         if (controlType != "DUMMY") {
             this.sensor = new Sensor(this);
             this.brain = new NeuralNetwork(
-                [this.sensor.rayCount, 6, 4]
+                [this.sensor.rayCount, 6, 4, 3]
             )
         }
         this.controls = new Controls(controlType);
@@ -42,10 +42,11 @@ class Car {
             );
             const outputs = NeuralNetwork.feedForward(offsets, this.brain);
             if (this.brain) {
-                this.controls.forward = outputs[0];
-                this.controls.left = outputs[1];
-                this.controls.right = outputs[2];
-                this.controls.reverse = outputs[3];
+                //this.controls.forward = outputs[0];
+                this.controls.forward = true;
+                this.controls.left = outputs[0];
+                this.controls.right = outputs[1];
+                this.controls.reverse = outputs[2];
             }
         }
     }

@@ -7,23 +7,16 @@ canvas.width = 200;
 const ctx = canvas.getContext('2d');
 const road = new Road(canvas.width / 2, canvas.width * 0.9);
 //KEYS is used for giving control of keys to this particular car
-const N = 1000;
+const N = 250;
 const cars = generateCars(N);
-const traffic = [
-    new Car(road.getLaneCenter(0), -100, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(1), -500, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(2), -400, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(2), -200, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(1), -300, 30, 50, "DUMMY", 2),
-    new Car(road.getLaneCenter(0), -700, 30, 50, "DUMMY", 2)
-];
+const traffic = generateTraffic(100);
 let bestCar = cars[0];
 if (localStorage.getItem("BestBrain")) {
     bestCar.brain = JSON.parse(localStorage.getItem("BestBrain"));
     for (let i = 0; i < cars.length; i++) {
         cars[i].brain = JSON.parse(localStorage.getItem("BestBrain"));
         if (i != 0) {
-            NeuralNetwork.mutate(cars[i].brain, 0.2);
+            NeuralNetwork.mutate(cars[i].brain, 0.1);
         }
     }
 }
@@ -45,7 +38,16 @@ function discard() {
 function generateCars(N) {
     const cars = [];
     for (let i = 0; i < N; i++) {
-        cars.push(new Car(road.getLaneCenter(1), 100, 30, 50, "AI"));
+        cars.push(new Car(road.getLaneCenter(Math.floor(Math.random() * 3)), 100, 30, 50, "AI"));
+    }
+    return cars;
+}
+
+//Generate N cars
+function generateTraffic(N) {
+    const cars = [];
+    for (let i = 1; i <= N; i++) {
+        cars.push(new Car(road.getLaneCenter(Math.floor(Math.random() * 3)), (-150 * i), 30, 50, "DUMMY", 2));
     }
     return cars;
 }
@@ -87,6 +89,10 @@ function animate() {
         cars[i].draw(ctx, "blue");
     }
     ctx.globalAlpha = 1;
+    var carImage = new Image();
+    carImage.src = "https://image.emojisky.com/57/11362057-middle.png";
+    ctx.drawImage(carImage, 0, 0);
+
     bestCar.draw(ctx, "blue", true);
     ctx.restore();
 
