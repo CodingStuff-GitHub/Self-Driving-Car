@@ -1,6 +1,6 @@
 class Car {
     //Constructor
-    constructor(x, y, width, height, controlType, maxSpeed = 3) {
+    constructor(x, y, width, height, controlType, maxSpeed = 5) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -20,7 +20,7 @@ class Car {
         if (controlType != "DUMMY") {
             this.sensor = new Sensor(this);
             this.brain = new NeuralNetwork(
-                [this.sensor.rayCount, 6, 4, 3]
+                [this.sensor.rayCount, 6, 4, 2]
             )
         }
         this.controls = new Controls(controlType);
@@ -46,7 +46,7 @@ class Car {
                 this.controls.forward = true;
                 this.controls.left = outputs[0];
                 this.controls.right = outputs[1];
-                this.controls.reverse = outputs[2];
+                // this.controls.reverse = outputs[2];
             }
         }
     }
